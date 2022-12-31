@@ -1,15 +1,11 @@
 package com.http.ceas.demo;
 import com.http.ceas.core.HttpConnection;
-import com.http.ceas.core.annotation.verbs.GET;
-import com.http.ceas.entity.BodyRequest;
-import com.http.ceas.core.annotation.verbs.POST;
-import com.http.ceas.core.annotation.verbs.DELETE;
-import com.http.ceas.core.annotation.Client;
-import com.http.ceas.core.annotation.Headers;
-import com.http.ceas.core.HttpStatus;
 import com.http.ceas.core.annotation.Insert;
 import com.http.ceas.core.annotation.InsertionType;
-import com.http.ceas.MediaType;
+import com.http.ceas.core.annotation.verbs.DELETE;
+import com.http.ceas.core.annotation.verbs.GET;
+import com.http.ceas.core.annotation.verbs.POST;
+import com.http.ceas.entity.BodyRequest;
 
 public interface Client{
 

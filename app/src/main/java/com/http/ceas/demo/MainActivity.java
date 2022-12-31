@@ -34,12 +34,7 @@ public class MainActivity extends Activity{
     public void onBackPressed(){
         
         
-        try{
-            String link = "https://6259e1d3cda73d132d1af641.mockapi.io/API/teste/pessoa";
-            text.setText(new DirectLink(link).start(200));
-        }catch(Exception e){
-            text.setText(e.toString());
-        }
+        
 
         
     }
