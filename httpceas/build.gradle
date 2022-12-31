@@ -29,3 +29,16 @@ android {
 dependencies {
     implementation 'com.google.code.gson:gson:2.8.0'
 }
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId = 'com.github.ceas-dev'
+                artifactId = 'http-ceas'
+                version = '1.0'
+            }
+        }
+    }
+}
