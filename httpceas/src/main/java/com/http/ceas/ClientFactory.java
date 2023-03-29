@@ -275,7 +275,7 @@ public class ClientFactory{
                 String key = array [0].trim();
                 String value = array [1].trim();
                 if(value.matches(PATTERN)){
-                    Object argument = resolveArgument(value, array);
+                    Object argument = resolveArgument(value, args);
                     if(argument instanceof String || argument instanceof Number){
                         value = Objects.toString(argument);
                     }else if(argument instanceof Authorization){
