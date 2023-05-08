@@ -7,168 +7,173 @@ import java.util.Map;
 import java.util.Set;
 
 
-public final class HttpURL{
+public final class HttpURL {
 
     private static final String PATH_SEPARATOR = "/";
 
     private final List<String> paths = new ArrayList<>();
     private final Map<String, String> queries = new LinkedHashMap<>();
     private final Uri.Builder baseUri;
+    private final boolean urlEndPathSeparador;
 
-    private HttpURL(String url){
+    private HttpURL(String url) {
         Uri uri = Uri.parse(url);
         paths.addAll(uri.getPathSegments());
-        for(String key : uri.getQueryParameterNames()){
+        for (String key : uri.getQueryParameterNames()) {
             queries.put(key, uri.getQueryParameter(key));
         }
         baseUri = uri.buildUpon().clearQuery().path(null);
+        urlEndPathSeparador = url.endsWith(PATH_SEPARATOR);
     }
 
-    public static HttpURL create(String url){
-        if(url == null){
+    public static HttpURL create(String url) {
+        if (url == null) {
             throw new IllegalArgumentException("url cannot be null");
         }
-        if(url.isEmpty()){
+        if (url.isEmpty()) {
             throw new IllegalArgumentException("url cannot be empty");
         }
         return new HttpURL(url);
     }
-    
-    public String getProtocol(){
+
+    public String getProtocol() {
         return toUri().getScheme();
     }
-    
 
-    public HttpURL addPath(String path){
-        if(path == null || path.isEmpty()) return this;
-        if(path.contains(PATH_SEPARATOR)){
-            for(String pathSepare : path.split(PATH_SEPARATOR)){
+
+    public HttpURL addPath(String path) {
+        if (path == null || path.isEmpty()) return this;
+        if (path.contains(PATH_SEPARATOR)) {
+            for (String pathSepare : path.split(PATH_SEPARATOR)) {
                 paths.add(pathSepare);
             }
-        }else{
+        } else {
             paths.add(path);
         }
         return this;
     }
 
-    public HttpURL addPath(String... paths){
-        if(paths == null || paths.length == 0) return this;
-        for(String path : paths){
+    public HttpURL addPath(String... paths) {
+        if (paths == null || paths.length == 0) return this;
+        for (String path : paths) {
             this.paths.add(path);
         }
         return this;
     }
 
-    public HttpURL editPath(int index, String path){
-        if(isSafeIndex(index)) paths.set(index, path);
+    public HttpURL editPath(int index, String path) {
+        if (isSafeIndex(index)) paths.set(index, path);
         return this;
     }
 
-    public HttpURL removePath(int index){
-        if(isSafeIndex(index)) paths.remove(index);
+    public HttpURL removePath(int index) {
+        if (isSafeIndex(index)) paths.remove(index);
         return this;
     }
 
-    public HttpURL clearPaths(){
+    public HttpURL clearPaths() {
         paths.clear();
         return this;
     }
 
-    public int countPaths(){
+    public int countPaths() {
         return paths.size();
     }
 
-    public boolean containsPaths(){
+    public boolean containsPaths() {
         return !paths.isEmpty();
     }
 
-    public boolean containsPath(String path){
-        if(path.contains(PATH_SEPARATOR)){
-            for(String pathSepare : path.split(PATH_SEPARATOR)){
-                if(paths.contains(pathSepare)) return true;
+    public boolean containsPath(String path) {
+        if (path.contains(PATH_SEPARATOR)) {
+            for (String pathSepare : path.split(PATH_SEPARATOR)) {
+                if (paths.contains(pathSepare)) return true;
             }
             return false;
         }
         return paths.contains(path);
     }
 
-    public String getPath(int index){
+    public String getPath(int index) {
         return isSafeIndex(index) ? paths.get(index) : null;
     }
 
-    public String getLastPath(){
+    public String getLastPath() {
         return getPath(paths.size() - 1);
     }
 
-    public List<String> getAllPaths(){
+    public List<String> getAllPaths() {
         return paths;
     }
 
-    public HttpURL putQuery(Map<String, String> queries){
+    public HttpURL putQuery(Map<String, String> queries) {
         this.queries.putAll(queries);
         return this;
     }
-    public HttpURL putQuery(String key, String value){
+    public HttpURL putQuery(String key, String value) {
         queries.put(key, value);
         return this;
     }
 
-    public HttpURL removeQuery(String key){
+    public HttpURL removeQuery(String key) {
         queries.remove(key);
         return this;
     }
 
-    public HttpURL clearQuery(){
+    public HttpURL clearQuery() {
         queries.clear();
         return this;
     }
 
-    public boolean containsQueries(){
+    public boolean containsQueries() {
         return !queries.isEmpty();
     }
 
-    public boolean containsQuery(String key){
+    public boolean containsQuery(String key) {
         return queries.containsKey(key);
     }
 
-    public boolean containsQueryValue(String value){
+    public boolean containsQueryValue(String value) {
         return queries.containsValue(value);
     }
 
-    public String getQuery(String key){
+    public String getQuery(String key) {
         return queries.get(key);
     }
 
-    public int countQuery(){
+    public int countQuery() {
         return queries.size();
     }
 
-    public Set<String> getAllKeysQuery(){
+    public Set<String> getAllKeysQuery() {
         return queries.keySet();
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         updateBaseUri();
         return baseUri.toString();
     }
 
-    public Uri toUri(){
+    public Uri toUri() {
         updateBaseUri();
         return baseUri.build();
     }
 
-    private void updateBaseUri(){
+    private void updateBaseUri() {
         baseUri.clearQuery().path(null);
-        for(String path : paths){
+        for (String path : paths) {
             baseUri.appendPath(path);
         }
-        for(String key : queries.keySet()){
+        for (String key : queries.keySet()) {
             baseUri.appendQueryParameter(key, queries.get(key));
+        }
+        if (urlEndPathSeparador) {
+            baseUri.appendEncodedPath("");
         }
     }
 
-    private boolean isSafeIndex(int index){
+    private boolean isSafeIndex(int index) {
         return index < countPaths() && index >= 0;
     }
 }
