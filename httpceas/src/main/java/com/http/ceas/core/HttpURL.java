@@ -23,7 +23,7 @@ public final class HttpURL {
             queries.put(key, uri.getQueryParameter(key));
         }
         baseUri = uri.buildUpon().clearQuery().path(null);
-        urlEndPathSeparador = url.endsWith(PATH_SEPARATOR);
+        urlEndPathSeparador = uri.getEncodedPath().endsWith(PATH_SEPARATOR);
     }
 
     public static HttpURL create(String url) {
