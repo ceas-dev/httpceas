@@ -165,9 +165,11 @@ public final class HttpURL {
         for (String path : paths) {
             baseUri.appendPath(path);
         }
+        StringBuilder encodeQuery = new StringBuilder();
         for (String key : queries.keySet()) {
-            baseUri.appendQueryParameter(key, queries.get(key));
+           encodeQuery.append(String.format("%s=%s&", key, queries.get(key)));
         }
+        baseUri.encodedQuery(encodeQuery.substring(0, encodeQuery.length()-1));
         if (urlEndPathSeparador) {
             baseUri.appendEncodedPath("");
         }

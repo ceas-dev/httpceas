@@ -5,6 +5,14 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.http.ceas.ClientFactory;
+import com.http.ceas.callback.HttpCallback;
+import com.http.ceas.core.HttpConnection;
+import com.http.ceas.core.HttpURL;
+import com.http.ceas.core.annotation.Insert;
+import com.http.ceas.core.annotation.InsertionType;
+import com.http.ceas.core.annotation.Params;
+import com.http.ceas.core.annotation.verbs.GET;
+import com.http.ceas.entity.Response;
 
 
 public class MainActivity extends Activity{
@@ -21,13 +29,30 @@ public class MainActivity extends Activity{
         setContentView(R.layout.activity_main);
         text = findViewById(R.id.activitymainTextView1);
         img = findViewById(R.id.activity_mainImageView);
-        //Response t = null;
-        //List<String> list = t.body().toListOf(String.class);
-        try{
-            client = ClientFactory.newInstance().create(Client.class);
-        }catch(Exception e){
-            text.setText(e.toString());
-        }
+
+        HttpURL url = HttpURL.create(Teste.baseUrl);
+        url.putQuery("@", "teste");
+        url.putQuery("key", "master");
+        url.putQuery("user", "carlos");
+        text.setText(url.toString());
+
+        Teste teste = ClientFactory.newInstance().create(Teste.class);
+        teste.get().then(new HttpCallback() {
+            @Override
+            public Runnable onResponse(final Response response) throws Exception {
+                return new Runnable() {
+                    @Override
+                    public void run() {
+                        //text.setText(response.request().url());
+                    }
+                };
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+
+            }
+        });
     }
 
     @Override
@@ -36,6 +61,16 @@ public class MainActivity extends Activity{
         
       
         
+    }
+
+    interface Teste{
+
+        @Insert(InsertionType.BASE_URL)
+        String baseUrl = "https://google.com";
+
+        @GET
+        @Params({"@:teste"})
+        HttpConnection get();
     }
 
 
