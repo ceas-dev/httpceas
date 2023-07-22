@@ -13,6 +13,7 @@ import com.http.ceas.core.annotation.InsertionType;
 import com.http.ceas.core.annotation.Params;
 import com.http.ceas.core.annotation.verbs.GET;
 import com.http.ceas.entity.Response;
+import com.http.ceas.core.annotation.Headers;
 
 
 public class MainActivity extends Activity{
@@ -27,23 +28,23 @@ public class MainActivity extends Activity{
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        text = findViewById(R.id.activitymainTextView1);
-        img = findViewById(R.id.activity_mainImageView);
+       text = findViewById(R.id.activitymainTextView1);
+       img = findViewById(R.id.activity_mainImageView);
 
-        HttpURL url = HttpURL.create(Teste.baseUrl);
+       /* HttpURL url = HttpURL.create(Teste.baseUrl);
         url.putQuery("@", "teste");
         url.putQuery("key", "master");
         url.putQuery("user", "carlos");
-        text.setText(url.toString());
+        text.setText(url.toString());*/
 
-        Teste teste = ClientFactory.newInstance().create(Teste.class);
-        teste.get().then(new HttpCallback() {
+       Teste teste = ClientFactory.newInstance().create(Teste.class);
+        teste.get("teste", "bola").then(new HttpCallback() {
             @Override
             public Runnable onResponse(final Response response) throws Exception {
                 return new Runnable() {
                     @Override
                     public void run() {
-                        //text.setText(response.request().url());
+                        text.setText(response.request().url());
                     }
                 };
             }
@@ -66,11 +67,12 @@ public class MainActivity extends Activity{
     interface Teste{
 
         @Insert(InsertionType.BASE_URL)
-        String baseUrl = "https://google.com";
+        String baseUrl = "https://google.com/";
 
-        @GET
-        @Params({"@:teste"})
-        HttpConnection get();
+        @GET("v2/auth/update/")
+        @Params({"@:{0}"})
+        @Headers({"RPEASYAPP:{1}"})
+        HttpConnection get(String t, String k);
     }
 
 
